@@ -4,6 +4,13 @@ WeeGrid is a HackBelfast project for the Belfast 2036 theme.
 
 It helps streets explore community energy co-ops by modeling collective rooftop solar, shared storage, and loan-backed installation economics.
 
+**Features:**
+- Smart cluster detection for local areas
+- Real solar yield calculations (PVGIS API)
+- Multi-dataset area due-diligence scoring
+- Creative impact storytelling
+- DeFi Mode (toggle to see speculative Solana returns for co-op savings)
+
 ## Project Structure
 
 - `frontend/`: Next.js web app (React + Tailwind)

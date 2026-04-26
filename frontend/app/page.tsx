@@ -204,6 +204,7 @@ export default function Home() {
   const [inquiryError, setInquiryError] = useState("");
   const [inquiryResult, setInquiryResult] = useState<InquiryResult | null>(null);
   const [revealedChecks, setRevealedChecks] = useState(0);
+  const [solanaMode, setSolanaMode] = useState(false);
   const [insightsResult, setInsightsResult] = useState<InsightsResult | null>(
     null,
   );
@@ -426,10 +427,15 @@ export default function Home() {
 
       setCalculatorResult(payload);
       requestAnimationFrame(() => {
-        resultsRef.current?.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
+        if (resultsRef.current) {
+          const elementPosition = resultsRef.current.getBoundingClientRect().top + window.scrollY;
+          const offsetPosition = elementPosition - (window.innerHeight * 0.5);
+          
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: "smooth",
+          });
+        }
       });
     } catch (calculateError) {
       setError(
@@ -897,19 +903,101 @@ export default function Home() {
           <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
             {calculatorResult ? (
             <section className="brand-panel rounded-3xl p-5 md:p-7">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-green-300">
-                Step 3 | Projected Savings & Returns
-              </p>
-              <h3 className="mt-2 text-2xl font-bold md:text-3xl">
-                You could save{" "}
-                {pounds(calculatorResult.annualSavingPerHomeAfterLoan)} per
-                year per household after year{" "}
-                {calculatorResult.loanClearedYear || 1}
-              </h3>
-              <p className="mt-2 text-emerald-100/75">
-                Area modeled: {calculatorResult.areaLabel} ({calculatorResult.houseCount} homes).
-              </p>
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1">
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-green-300">
+                    Step 3 | Projected Savings & Returns
+                  </p>
+                  <h3 className="mt-2 text-2xl font-bold md:text-3xl">
+                    {solanaMode ? (
+                      <>If co-op invested in Solana</>
+                    ) : (
+                      <>You could save{" "}
+                      {pounds(calculatorResult.annualSavingPerHomeAfterLoan)} per
+                      year per household after year{" "}
+                      {calculatorResult.loanClearedYear || 1}</>
+                    )}
+                  </h3>
+                  <p className="mt-2 text-emerald-100/75">
+                    Area modeled: {calculatorResult.areaLabel} ({calculatorResult.houseCount} homes).
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setSolanaMode(!solanaMode)}
+                  className={`rounded-lg border px-3 py-2 text-xs font-bold uppercase tracking-wide transition ${
+                    solanaMode
+                      ? "border-purple-400/50 bg-gradient-to-r from-purple-600 to-pink-600 text-white"
+                      : "border-white/20 bg-black/25 text-emerald-100 hover:border-purple-400/40"
+                  }`}
+                >
+                  {solanaMode ? "DeFi Mode ON" : "DeFi Mode?"}
+                </button>
+              </div>
 
+              {solanaMode ? (
+                (() => {
+                  // Calculate future value of annuity with compound interest
+                  // FV = PMT × [(1 + r)^n - 1] / r
+                  // Where PMT = annual payment, r = interest rate, n = number of periods
+                  const annualSaving = calculatorResult.annualSavingPerHomeAfterLoan;
+                  const rate = 0.15; // 15% APY
+                  const years15 = 15;
+                  const years10 = 10;
+                  
+                  const futureValue15 = annualSaving * ((Math.pow(1 + rate, years15) - 1) / rate);
+                  const futureValue10 = annualSaving * ((Math.pow(1 + rate, years10) - 1) / rate);
+                  
+                  return (
+                    <div className="mt-4 rounded-xl border border-purple-400/40 bg-gradient-to-br from-purple-900/30 to-pink-900/20 p-4">
+                      <p className="text-xs uppercase tracking-wide text-purple-200">
+                        Warning: Speculative DeFi Scenario
+                      </p>
+                      <p className="mt-2 text-sm text-purple-100/80">
+                        If the co-op reinvested their annual savings into Solana (SOL) each year at a hypothetical 15% APY staking rate, per household returns would be:
+                      </p>
+                      <div className="mt-4 grid gap-3 md:grid-cols-3">
+                        <div className="rounded-xl border border-purple-300/20 bg-purple-950/40 p-4">
+                          <p className="text-xs uppercase tracking-wide text-purple-200/70">
+                            Annual investment
+                          </p>
+                          <p className="mt-1 text-2xl font-bold text-purple-100">
+                            {pounds(annualSaving)}
+                          </p>
+                          <p className="mt-1 text-xs text-purple-200/60">
+                            Per household each year
+                          </p>
+                        </div>
+                        <div className="rounded-xl border border-purple-300/20 bg-purple-950/40 p-4">
+                          <p className="text-xs uppercase tracking-wide text-purple-200/70">
+                            After 10 years
+                          </p>
+                          <p className="mt-1 text-2xl font-bold text-purple-100">
+                            {pounds(futureValue10)}
+                          </p>
+                          <p className="mt-1 text-xs text-purple-200/60">
+                            Per household @ 15% APY
+                          </p>
+                        </div>
+                        <div className="rounded-xl border border-purple-300/20 bg-purple-950/40 p-4">
+                          <p className="text-xs uppercase tracking-wide text-purple-200/70">
+                            After 15 years
+                          </p>
+                          <p className="mt-1 text-2xl font-bold text-purple-100">
+                            {pounds(futureValue15)}
+                          </p>
+                          <p className="mt-1 text-xs text-purple-200/60">
+                            Per household @ 15% APY
+                          </p>
+                        </div>
+                      </div>
+                      <p className="mt-4 text-xs text-purple-200/60">
+                        Disclaimer: Crypto is volatile. This is purely speculative. DYOR. Not financial advice.
+                      </p>
+                    </div>
+                  );
+                })()
+              ) : (
               <div className="mt-6 grid gap-3 md:grid-cols-3">
                 <div className="rounded-xl border border-white/20 bg-black/25 p-4">
                   <p className="text-xs uppercase tracking-wide text-emerald-200/70">
@@ -958,6 +1046,7 @@ export default function Home() {
                   </p>
                 </div>
               </div>
+              )}
 
               {insightsResult && insightsResult.insights.length > 0 ? (
                 <div className="mt-8">
