@@ -1,0 +1,148 @@
+@import "tailwindcss";
+
+:root {
+  --background: #03100b;
+  --foreground: #effcf4;
+  --brand-green: #22c55e;
+  --brand-green-soft: #86efac;
+  --brand-panel: rgba(5, 27, 15, 0.68);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #03100b;
+    --foreground: #effcf4;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+.brand-page {
+  background:
+    radial-gradient(
+      circle at 18% 20%,
+      rgba(74, 222, 128, 0.18),
+      rgba(74, 222, 128, 0) 45%
+    ),
+    radial-gradient(
+      circle at 78% 82%,
+      rgba(34, 197, 94, 0.22),
+      rgba(34, 197, 94, 0) 40%
+    ),
+    var(--background);
+}
+
+.brand-panel {
+  background: rgba(5, 27, 15, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(12px);
+}
+
+.step3-section .brand-panel {
+  background: rgba(5, 27, 15, 0.25);
+}
+
+.hero-card {
+  background: rgba(255, 255, 255, 0.69) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
+}
+
+.dark-bg-wrapper {
+  position: relative;
+  background: linear-gradient(to bottom, #051a0f, rgba(6, 56, 28, 0.5), #051a0f);
+}
+
+.step2-section {
+  position: relative;
+  min-height: 600px;
+}
+
+.step2-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("/queens-university.png");
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  max-width: 1400px;
+  opacity: 0.08;
+  mix-blend-mode: screen;
+  pointer-events: none;
+  filter: invert(1);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.step3-section {
+  position: relative;
+  min-height: 600px;
+}
+
+.step3-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("/got-four-houses.png");
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  max-width: 1400px;
+  opacity: 0.08;
+  mix-blend-mode: screen;
+  pointer-events: none;
+  filter: invert(1);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.step4-section {
+  position: relative;
+  min-height: 600px;
+}
+
+.step4-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("/harland-wolff-cranes.png");
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  max-width: 1200px;
+  opacity: 0.08;
+  mix-blend-mode: screen;
+  pointer-events: none;
+  filter: invert(1);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+@keyframes roadPulse {
+  0% {
+    stroke-opacity: 0.45;
+  }
+  50% {
+    stroke-opacity: 1;
+  }
+  100% {
+    stroke-opacity: 0.45;
+  }
+}
+
+.co-op-selection-line {
+  animation: roadPulse 2.4s ease-in-out infinite;
+}

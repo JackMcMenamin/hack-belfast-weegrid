@@ -1,0 +1,20 @@
+# Node / frontend
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+/node_modules/
+
+# Python / backend
+backend/.venv/
+backend/__pycache__/
+backend/.pytest_cache/
+backend/*.pyc
+
+# Env and local settings
+.env
+.env.local
+.env.*.local
+
+# OS / editor
+.DS_Store
+Thumbs.db
